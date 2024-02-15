@@ -9,9 +9,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.HashMap;
-import java.util.Map;
 
-public class myJobsPage extends loaderPage {
+public class myJobsPage extends common {
     private WebDriver driver;
 
     private header navigator;
@@ -26,20 +25,43 @@ public class myJobsPage extends loaderPage {
 
     private By btnStatus = By.xpath("//label[@data-testid='my_job_item_toggle_switch']");
 
+    private By txtStatus = By.xpath("//label[@data-testid='my_job_item_toggle_switch']//span");
+
     private By btnPostJob = By.xpath("(//div[@data-testid = 'my-job-modal']//span[normalize-space() = 'Post Job'])[last()]");
 
     private By btnCloseJob = By.xpath("//div[@class = 'el-message-box__btns']//span[normalize-space() = 'Close Job']");
 
+    private By popupCloseJob = By.xpath("(//div[@class = 'el-message-box__header']//ancestor::div)[2]");
+
+    private By CloseJobBtnCancel = By.xpath("//div[@class = 'el-message-box__btns']//span[normalize-space() = 'Cancel']");
+
+    private By CloseJobContent = By.xpath("//div[@class = 'el-message-box__message']");
+
+    private By CloseJobTitle = By.xpath("//div[@class = 'el-message-box__title']//span");
+
+    private By popupPostJob = By.xpath("//div[@data-testid = 'my-job-modal']/div");
+
+    private By postJobBtnCancel = By.xpath("(//div[@data-testid = 'my-job-modal']//span[normalize-space() = 'Cancel'])[last()]");
+
+    private By postJobContent = By.xpath("//div[@data-testid = 'my-job-modal']//div[@class = 'el-dialog__body']");
+
+    private By postJobTitle = By.xpath("//div[@data-testid = 'my-job-modal']//div[@class = 'el-dialog__header']//span");
+
+    private By toast = By.xpath("//div[contains(@class,'toasted')]");
+
+    private By btnFilter = By.xpath("//div[@data-testid='my_jobs_filter_dropdown']");
+
+
+
     public void inputSearchKeyword(String keyword){
-        waitForElementNotVisible(5,"(//div[@data-testid='loading_wrapper'])[1]");
         WebElement textboxSearch = driver.findElement(txtSearch);
         textboxSearch.sendKeys(keyword);
         textboxSearch.sendKeys(Keys.ENTER);
+        waitForPageLoading();
     }
 
     public Boolean getCurrentStatus(){
-        waitForElementNotVisible(5,"(//div[@data-testid='loading_wrapper'])[1]");
-        WebElement status = driver.findElement(By.xpath("//label[@data-testid='my_job_item_toggle_switch']//span"));
+        WebElement status = driver.findElement(txtStatus);
         String currentStatus = status.getAttribute("class");
         if (currentStatus.contains("icon-check2")) {
             return true;
@@ -54,17 +76,17 @@ public class myJobsPage extends loaderPage {
         WebElement content;
         WebElement jobTitle;
         if (isOpen) {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("(//div[@class = 'el-message-box__header']//ancestor::div)[2]")));
-            btnCancel = driver.findElement(By.xpath("//div[@class = 'el-message-box__btns']//span[normalize-space() = 'Cancel']"));
-            content = driver.findElement(By.xpath("//div[@class = 'el-message-box__message']"));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(popupCloseJob));
+            btnCancel = driver.findElement(CloseJobBtnCancel);
+            content = driver.findElement(CloseJobContent);
             btnConfirm = driver.findElement(btnCloseJob);
-            jobTitle = driver.findElement(By.xpath("//div[@class = 'el-message-box__title']//span[normalize-space() = 'Store Leader Trainee 06 update']"));
+            jobTitle = driver.findElement(CloseJobTitle);
         } else {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@data-testid = 'my-job-modal']/div")));
-            btnCancel = driver.findElement(By.xpath("(//div[@data-testid = 'my-job-modal']//span[normalize-space() = 'Cancel'])[last()]"));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(popupPostJob));
+            btnCancel = driver.findElement(postJobBtnCancel);
             btnConfirm = driver.findElement(btnPostJob);
-            content = driver.findElement(By.xpath("//div[@data-testid = 'my-job-modal']//div[@class = 'el-dialog__body']"));
-            jobTitle = driver.findElement(By.xpath("//div[@data-testid = 'my-job-modal']//div[@class = 'el-dialog__header']//span"));
+            content = driver.findElement(postJobContent);
+            jobTitle = driver.findElement(postJobTitle);
         }
         HashMap<String, String> myJobModal = new HashMap<String, String>();
         myJobModal.put("title",jobTitle.getText());
@@ -89,9 +111,7 @@ public class myJobsPage extends loaderPage {
     }
 
     public void clickBtnChangeStatus(){
-        waitForElementNotVisible(5,"(//div[@data-testid='loading_wrapper'])[1]");
-        WebElement buttonStatus = driver.findElement(btnStatus);
-        buttonStatus.click();
+        driver.findElement(btnStatus).click();
     }
 
     public void clickConfirmChangeStatus(boolean isOpen){
@@ -100,8 +120,11 @@ public class myJobsPage extends loaderPage {
         } else {
             driver.findElement(btnPostJob).click();
         }
-        waitForElementNotVisible(5,"(//div[@data-testid='loading_wrapper'])[1]");
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(toast));
+        waiter.until(ExpectedConditions.invisibilityOfElementLocated(toast));
     }
+
+
 
     public Boolean changeJobStatus(String reqID){
         navigator.clickMyJobs();
@@ -111,6 +134,18 @@ public class myJobsPage extends loaderPage {
         this.clickConfirmChangeStatus(curStatus);
         return !curStatus;
     }
+
+    public void waitToggleClickable(){
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(btnStatus));
+        waitForPageLoading();
+    }
+
+    public void waitForSearching() {
+        String Item = "//div[contains(@data-testid,'my_job_item')]";
+        waiter.until(ExpectedConditions.invisibilityOfAllElements(driver.findElements(By.xpath(Item))));
+        waiter.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(Item)));
+    }
+
 
 
 }

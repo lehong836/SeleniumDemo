@@ -3,16 +3,24 @@ package test.pages;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 
 import java.time.Duration;
 
-public class header extends loaderPage {
+public class header extends common {
     private WebDriver driver;
+    private By currentAccount = By.xpath("//div[@data-testid = 'header_lbl_company_name']//span");
+
+    private By txtSearch = By.xpath("//div[@class = 'el-input el-input--prefix']//input");
+
+    private Integer myJobIndex = 2;
+    private Integer settingIndex = 31;
+
+
 
     public header(WebDriver driver) {
         super(driver);
         this.driver = driver;
+        this.waiter = new WebDriverWait(driver, Duration.ofSeconds(5));
     }
 
     private By menuAllApp = By.xpath("//i[contains(@class,'icon-menu-ellipsis')]//ancestor-or-self::button");
@@ -27,50 +35,42 @@ public class header extends loaderPage {
 
     public void clickSwitchCompany(){
         driver.findElement(accountMenu).click();
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        wait.until(ExpectedConditions.elementToBeClickable(switchAccount));
-        WebElement switchAcc = driver.findElement(switchAccount);
-        switchAcc.click();
+        waiter.until(ExpectedConditions.elementToBeClickable(switchAccount));
+        driver.findElement(switchAccount).click();
+        waitForPageLoading();
     }
     public String getCurrentCompany() {
-        WebElement currentAccount = driver.findElement(By.xpath("//div[@data-testid = 'header_lbl_company_name']//span"));
-        return currentAccount.getText();
+        return driver.findElement(currentAccount).getText();
     }
 
     public void searchCompany(String name){
-        waitForElementNotVisible(5,"(//div[@data-testid='loading_wrapper'])[1]");
-        WebElement txtSearch = driver.findElement(By.xpath("//div[@class = 'el-input el-input--prefix']//input"));
-        txtSearch.sendKeys(name);
+        driver.findElement(txtSearch).sendKeys(name);
+        waitForPageLoading();
     }
 
     public void switchCompany(String name){
         if (!name.equals(getCurrentCompany())) {
             clickSwitchCompany();
             searchCompany(name);
-            waitForElementNotVisible(5,"(//div[@data-testid='loading_wrapper'])[1]");
             WebElement accName = driver.findElement(By.xpath("//span[normalize-space() = '" + name + "']"));
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-            wait.until(ExpectedConditions.elementToBeClickable(accName));
+            //waiter.until(ExpectedConditions.elementToBeClickable(accName));
             accName.click();
+            waitForRefreshPage();
         }
     }
 
     public void clickAllApps(){
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        wait.until(ExpectedConditions.elementToBeClickable(menuAllApp));
         driver.findElement(menuAllApp).click();
+        waitForPageLoading();
     }
     public void clickMyJobs(){
-        waitForElementNotVisible(5,"(//div[@data-testid='loading_wrapper'])[1]");
         clickAllApps();
-        WebElement myJobs = driver.findElement(itemSelected(2));
-        myJobs.click();
+        driver.findElement(itemSelected(myJobIndex)).click();
     }
 
     public void clickSetting(){
-        waitForElementNotVisible(5,"(//div[@data-testid='loading_wrapper'])[1]" );
         clickAllApps();
-        driver.findElement(itemSelected(31)).click();
+        driver.findElement(itemSelected(settingIndex)).click();
     }
 
 }

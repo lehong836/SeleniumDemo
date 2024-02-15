@@ -56,8 +56,6 @@ public class setUpBase {
         loginPage.login("hong.le+readonly@paradox.ai", "1246");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@data-testid='breadcrumb_lbl_current']")));
-        /*String actualTitle = driver.getTitle();
-        Assert.assertEquals(actualTitle,"All Candidates | Candidate Experience Manager");*/
     }
 
 

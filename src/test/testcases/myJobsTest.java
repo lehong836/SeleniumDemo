@@ -1,13 +1,15 @@
 package test.testcases;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import test.base.setUpBase;
 import test.pages.myJobsPage;
 import test.pages.header;
+import test.datatest.common;
+import test.datatest.myJobs;
 
 public class myJobsTest extends setUpBase {
 
@@ -15,31 +17,33 @@ public class myJobsTest extends setUpBase {
 
     private header navigator;
 
-    private myJobsPage myJobs;
+    private myJobsPage myJobPage;
 
 
     @BeforeClass
     public void setUp() {
         driver = getDriver();
+        myJobPage = new myJobsPage(driver);
         switchAccount();
     }
 
     public void switchAccount(){
         navigator = new header(driver);
-        navigator.switchCompany("ParadoxVN - Hong Test: AF");
+        navigator.switchCompany(common.companyName);
         navigator.clickMyJobs();
+        myJobPage.waitToggleClickable();
     }
 
     @Test
     public void changeJobStatus(){
-        myJobs = new myJobsPage(driver);
-        myJobs.inputSearchKeyword("SC004");
+        myJobPage.inputSearchKeyword(myJobs.reqID);
+        myJobPage.waitForSearching();
         for (int i = 0; i <= 1; i++) {
-            Boolean preStatus = myJobs.getCurrentStatus();
-            myJobs.clickBtnChangeStatus();
-            Assert.assertTrue(myJobs.verifyMyJobModal("Store Leader Trainee 06 update", preStatus));
-            myJobs.clickConfirmChangeStatus(preStatus);
-            Boolean newStatus = myJobs.getCurrentStatus();
+            Boolean preStatus = myJobPage.getCurrentStatus();
+            myJobPage.clickBtnChangeStatus();
+            Assert.assertTrue(myJobPage.verifyMyJobModal(myJobs.jobTitle, preStatus));
+            myJobPage.clickConfirmChangeStatus(preStatus);
+            Boolean newStatus = myJobPage.getCurrentStatus();
             Assert.assertTrue(preStatus != newStatus);
         }
     }

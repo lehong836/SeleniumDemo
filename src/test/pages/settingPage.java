@@ -3,7 +3,7 @@ package test.pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-public class settingPage extends loaderPage {
+public class settingPage extends common {
     private WebDriver driver;
 
     public settingPage(WebDriver driver){
@@ -16,7 +16,7 @@ public class settingPage extends loaderPage {
     }
 
     public void clickApplicantFlows(){
-       waitForElementNotVisible(5, xpathLoading);
+       waitForElementNotVisible(xpathLoading);
        driver.findElement(xpathItem("Applicant Flows")).click();
     }
 }

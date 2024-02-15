@@ -7,8 +7,15 @@ import org.openqa.selenium.WebElement;
 
 import java.util.HashMap;
 
-public class applicantFlowsPage extends loaderPage{
+public class applicantFlowsPage extends common {
     private WebDriver driver;
+    private By txtSearch = By.xpath("//div[@data-testid='af_list_search_btn']/input");
+    private By afName = By.xpath("(//div[@class = 'text-overflow'])[1]/span");
+    private By btnViewTargetedJob = By.xpath("//button[@data-testid='af_details_targeting_show_requisitions_btn']");
+    private By txtSearchTargetedJob = By.xpath("//div[@data-testid='af_targeted_requisitions_modal_search_btn']/input");
+    private By emptyLable = By.xpath("//div[@data-testid='empty_lbl_title']");
+    private String txtNoJob = "No requisitions found.";
+    private By numberOfTargetedJob = By.xpath("//tr[@class = 'el-table__row']");
 
     public applicantFlowsPage(WebDriver driver) {
         super(driver);
@@ -16,16 +23,16 @@ public class applicantFlowsPage extends loaderPage{
     }
 
     public void searchAF(String name){
-        waitForElementNotVisible(10, xpathLoading);
-        WebElement txtSearch = driver.findElement(By.xpath("//div[@data-testid='af_list_search_btn']/input"));
+        waitForElementNotVisible( xpathLoading);
+        WebElement txtSearch = driver.findElement(this.txtSearch);
         txtSearch.click();
         txtSearch.sendKeys(name);
         txtSearch.sendKeys(Keys.ENTER);
     }
 
     public String getAFLabel(){
-        waitForElementNotVisible(5, xpathLoading);
-        return driver.findElement(By.xpath("(//div[@class = 'text-overflow'])[1]/span")).getText().trim();
+        waitForElementNotVisible(xpathLoading);
+        return driver.findElement(afName).getText().trim();
     }
 
     public void clickAF(String name){
@@ -33,21 +40,21 @@ public class applicantFlowsPage extends loaderPage{
     }
 
     public void clickBtnTargetedJobOnDetail(){
-        waitForElementNotVisible(5, xpathLoading);
-        driver.findElement(By.xpath("//button[@data-testid='af_details_targeting_show_requisitions_btn']")).click();
+        waitForElementNotVisible(xpathLoading);
+        driver.findElement(btnViewTargetedJob).click();
     }
 
     public void searchTargetedJob(String reqID){
-        waitForElementNotVisible(5, xpathLoading);
-        WebElement txtSearch = driver.findElement(By.xpath("//div[@data-testid='af_targeted_requisitions_modal_search_btn']/input"));
+        waitForElementNotVisible(xpathLoading);
+        WebElement txtSearch = driver.findElement(txtSearchTargetedJob);
         txtSearch.click();
         txtSearch.sendKeys(reqID);
         txtSearch.sendKeys(Keys.ENTER);
     }
 
     public Integer countTargetedJobs(){
-        waitForElementNotVisible(5, xpathLoading);
-        return driver.findElements(By.xpath("//tr[@class = 'el-table__row']")).size();
+        waitForElementNotVisible(xpathLoading);
+        return driver.findElements(numberOfTargetedJob).size();
     }
 
     public HashMap<String, String> getTargetedJobInfo(){
@@ -59,5 +66,9 @@ public class applicantFlowsPage extends loaderPage{
             jobInfo.put("Job title", jobTitle);
         }
         return jobInfo;
+    }
+
+    public Boolean verifySearchNoJob(){
+        return driver.findElement(emptyLable).getText().trim().equals(txtNoJob);
     }
 }
