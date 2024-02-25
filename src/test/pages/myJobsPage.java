@@ -55,6 +55,7 @@ public class myJobsPage extends common {
 
     public void inputSearchKeyword(String keyword){
         WebElement textboxSearch = driver.findElement(txtSearch);
+        textboxSearch.clear();
         textboxSearch.sendKeys(keyword);
         textboxSearch.sendKeys(Keys.ENTER);
         waitForPageLoading();
@@ -145,7 +146,6 @@ public class myJobsPage extends common {
         waiter.until(ExpectedConditions.invisibilityOfAllElements(driver.findElements(By.xpath(Item))));
         waiter.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(Item)));
     }
-
 
 
 }

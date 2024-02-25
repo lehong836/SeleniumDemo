@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.HashMap;
 
@@ -23,15 +24,14 @@ public class applicantFlowsPage extends common {
     }
 
     public void searchAF(String name){
-        waitForElementNotVisible( xpathLoading);
+        waitForPageLoading();
         WebElement txtSearch = driver.findElement(this.txtSearch);
-        txtSearch.click();
         txtSearch.sendKeys(name);
         txtSearch.sendKeys(Keys.ENTER);
     }
 
     public String getAFLabel(){
-        waitForElementNotVisible(xpathLoading);
+        waitForPageLoading();
         return driver.findElement(afName).getText().trim();
     }
 
@@ -40,20 +40,20 @@ public class applicantFlowsPage extends common {
     }
 
     public void clickBtnTargetedJobOnDetail(){
-        waitForElementNotVisible(xpathLoading);
+        waitForPageLoading();
+        waiter.until(ExpectedConditions.elementToBeClickable(btnViewTargetedJob));
         driver.findElement(btnViewTargetedJob).click();
     }
 
     public void searchTargetedJob(String reqID){
-        waitForElementNotVisible(xpathLoading);
+        waitForPageLoading();
         WebElement txtSearch = driver.findElement(txtSearchTargetedJob);
-        txtSearch.click();
         txtSearch.sendKeys(reqID);
         txtSearch.sendKeys(Keys.ENTER);
     }
 
     public Integer countTargetedJobs(){
-        waitForElementNotVisible(xpathLoading);
+        waitForPageLoading();
         return driver.findElements(numberOfTargetedJob).size();
     }
 
