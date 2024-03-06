@@ -1,5 +1,7 @@
 package test.pages;
 
+import main.constant.LoadingType;
+import main.helpers.LoadingHelpers;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -8,6 +10,8 @@ import java.time.Duration;
 
 public class header extends common {
     private WebDriver driver;
+
+    private LoadingHelpers loading;
     private By currentAccount = By.xpath("//div[@data-testid = 'header_lbl_company_name']//span");
 
     private By txtSearch = By.xpath("//div[@class = 'el-input el-input--prefix']//input");
@@ -21,6 +25,7 @@ public class header extends common {
         super(driver);
         this.driver = driver;
         this.waiter = new WebDriverWait(driver, Duration.ofSeconds(5));
+        this.loading = new LoadingHelpers(driver);
     }
 
     private By menuAllApp = By.xpath("//i[contains(@class,'icon-menu-ellipsis')]//ancestor-or-self::button");
@@ -37,7 +42,7 @@ public class header extends common {
         driver.findElement(accountMenu).click();
         waiter.until(ExpectedConditions.elementToBeClickable(switchAccount));
         driver.findElement(switchAccount).click();
-        waitForPageLoading();
+        loading.getWaitLoading(LoadingType.DROPDOWN, false);
     }
     public String getCurrentCompany() {
         return driver.findElement(currentAccount).getText();
@@ -45,7 +50,7 @@ public class header extends common {
 
     public void searchCompany(String name){
         driver.findElement(txtSearch).sendKeys(name);
-        waitForPageLoading();
+        loading.getWaitLoading(LoadingType.DROPDOWN, true);
     }
 
     public void switchCompany(String name){
@@ -53,15 +58,15 @@ public class header extends common {
             clickSwitchCompany();
             searchCompany(name);
             WebElement accName = driver.findElement(By.xpath("//span[normalize-space() = '" + name + "']"));
-            //waiter.until(ExpectedConditions.elementToBeClickable(accName));
             accName.click();
-            waitForRefreshPage();
+         //   loading.getWaitLoading(LoadingType.FULL_SCREEN, true);
+            loading.getWaitLoading(LoadingType.DEFAULT, false);
         }
     }
 
     public void clickAllApps(){
         driver.findElement(menuAllApp).click();
-        waitForPageLoading();
+//        loading.getWaitLoading(LoadingType.DEFAULT, true);
     }
     public void clickMyJobs(){
         clickAllApps();
@@ -71,6 +76,7 @@ public class header extends common {
     public void clickSetting(){
         clickAllApps();
         driver.findElement(itemSelected(settingIndex)).click();
+        loading.getWaitLoading(LoadingType.DEFAULT, false);
     }
 
 }

@@ -1,5 +1,7 @@
 package test.pages;
 
+import main.constant.LoadingType;
+import main.helpers.LoadingHelpers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -10,6 +12,8 @@ import java.util.HashMap;
 
 public class applicantFlowsPage extends common {
     private WebDriver driver;
+
+    private LoadingHelpers loading;
     private By txtSearch = By.xpath("//div[@data-testid='af_list_search_btn']/input");
     private By afName = By.xpath("(//div[@class = 'text-overflow'])[1]/span");
     private By btnViewTargetedJob = By.xpath("//button[@data-testid='af_details_targeting_show_requisitions_btn']");
@@ -21,39 +25,39 @@ public class applicantFlowsPage extends common {
     public applicantFlowsPage(WebDriver driver) {
         super(driver);
         this.driver = driver;
+        loading = new LoadingHelpers(driver);
     }
 
     public void searchAF(String name){
-        waitForPageLoading();
         WebElement txtSearch = driver.findElement(this.txtSearch);
         txtSearch.sendKeys(name);
         txtSearch.sendKeys(Keys.ENTER);
+        loading.getWaitLoading(LoadingType.DEFAULT, true);
     }
 
     public String getAFLabel(){
-        waitForPageLoading();
         return driver.findElement(afName).getText().trim();
     }
 
     public void clickAF(String name){
         driver.findElement(By.xpath("//span[normalize-space() = '" + name + "']")).click();
+        loading.getWaitLoading(LoadingType.DEFAULT, true);
     }
 
     public void clickBtnTargetedJobOnDetail(){
-        waitForPageLoading();
         waiter.until(ExpectedConditions.elementToBeClickable(btnViewTargetedJob));
         driver.findElement(btnViewTargetedJob).click();
+        loading.getWaitLoading(LoadingType.DIALOG, false);
     }
 
     public void searchTargetedJob(String reqID){
-        waitForPageLoading();
         WebElement txtSearch = driver.findElement(txtSearchTargetedJob);
         txtSearch.sendKeys(reqID);
         txtSearch.sendKeys(Keys.ENTER);
+        loading.getWaitLoading(LoadingType.DIALOG, false);
     }
 
     public Integer countTargetedJobs(){
-        waitForPageLoading();
         return driver.findElements(numberOfTargetedJob).size();
     }
 
