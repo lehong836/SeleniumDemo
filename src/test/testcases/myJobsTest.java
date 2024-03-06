@@ -54,7 +54,7 @@ public class myJobsTest extends setUpBase {
         @Test
         public void changeJobStatus() throws Exception {
             //set file input
-            excel.setExcelFile("src/test/resources/myjobdata.xlsx","Trang tính1");
+            excel.setExcelFile("src/test/resources/testdata.xlsx","my_job");
             for (int i=1; i < 3; i++){
                 myJobPage.inputSearchKeyword(excel.getCellDataByColumName("reqID", i));
                 myJobPage.waitForSearching();

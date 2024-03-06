@@ -130,6 +130,7 @@ public class myJobsPage extends common {
     public Boolean changeJobStatus(String reqID){
         navigator.clickMyJobs();
         this.inputSearchKeyword(reqID);
+        this.waitForSearching();
         Boolean curStatus = this.getCurrentStatus();
         this.clickBtnChangeStatus();
         this.clickConfirmChangeStatus(curStatus);
